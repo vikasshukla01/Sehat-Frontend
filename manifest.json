@@ -1,0 +1,9 @@
+{
+  "name": "SEHAT - Smart Equitable Healthcare Access & Tracking",
+  "short_name": "SEHAT",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EBF5F1",
+  "theme_color": "#0E7C66",
+  "icons": []
+}
