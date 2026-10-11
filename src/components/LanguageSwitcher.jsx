@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Languages } from 'lucide-react'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -12,20 +13,24 @@ export default function LanguageSwitcher() {
     const code = e.target.value
     i18n.changeLanguage(code)
     localStorage.setItem('sehat_lang', code)
+    document.documentElement.lang = code
   }
 
   return (
-    <select
-      value={i18n.language}
-      onChange={handleChange}
-      className="rounded-full border border-pine-100 bg-white px-3 py-1.5 text-sm text-pine-700 focus:outline-none focus:ring-2 focus:ring-pine-400"
-      aria-label="Choose language"
-    >
-      {LANGUAGES.map((l) => (
-        <option key={l.code} value={l.code}>
-          {l.label}
-        </option>
-      ))}
-    </select>
+    <div className="relative flex items-center gap-1.5 rounded-full border border-forest-100 bg-white px-3 py-1.5 text-sm text-forest-700 transition hover:border-forest-400">
+      <Languages size={15} strokeWidth={2} aria-hidden="true" />
+      <select
+        value={i18n.language}
+        onChange={handleChange}
+        className="appearance-none bg-transparent pr-1 font-medium focus:outline-none"
+        aria-label="Choose language"
+      >
+        {LANGUAGES.map((l) => (
+          <option key={l.code} value={l.code}>
+            {l.label}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 }

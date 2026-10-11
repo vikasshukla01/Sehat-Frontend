@@ -7,9 +7,22 @@ html, body, #root {
 }
 
 body {
-  @apply font-body text-ink-900 bg-white;
+  @apply font-body text-ink-900 bg-sand-50;
 }
 
 h1, h2, h3 {
   @apply font-display;
 }
+
+:lang(hi) h1, :lang(hi) h2, :lang(hi) h3 {
+  font-family: 'Hind', sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+

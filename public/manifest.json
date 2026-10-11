@@ -3,7 +3,7 @@
   "short_name": "SEHAT",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#EBF5F1",
-  "theme_color": "#0E7C66",
+  "background_color": "#FBF9F4",
+  "theme_color": "#1F6B43",
   "icons": []
 }
