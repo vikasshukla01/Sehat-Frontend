@@ -40,7 +40,22 @@ export default {
       },
       fontFamily: {
         display: ['"Fraunces"', 'serif'],
-        body: ['"Hind"', '"Noto Sans Devanagari"', 'sans-serif'],
+        // Browsers pick, per character, the first font in this stack that has
+        // a glyph for it — so one stack covers all 11 languages: Hind
+        // carries Latin + Devanagari, each Noto Sans family covers one more
+        // Indian script, and the final sans-serif is the universal fallback.
+        body: [
+          '"Hind"',
+          '"Noto Sans Bengali"',
+          '"Noto Sans Tamil"',
+          '"Noto Sans Telugu"',
+          '"Noto Sans Gujarati"',
+          '"Noto Sans Kannada"',
+          '"Noto Sans Malayalam"',
+          '"Noto Sans Gurmukhi"',
+          '"Noto Sans Oriya"',
+          'sans-serif',
+        ],
       },
       keyframes: {
         'fade-up': {

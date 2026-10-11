@@ -14,8 +14,17 @@ h1, h2, h3 {
   @apply font-display;
 }
 
-:lang(hi) h1, :lang(hi) h2, :lang(hi) h3 {
-  font-family: 'Hind', sans-serif;
+/* Fraunces (the display font) only has Latin glyphs. For every other
+   language, headings fall back to the body font stack so each script
+   still renders instead of showing tofu/missing-glyph boxes. */
+html:not(:lang(en)) h1,
+html:not(:lang(en)) h2,
+html:not(:lang(en)) h3,
+html:not(:lang(en)) .font-display {
+  font-family: 'Hind', 'Noto Sans Bengali', 'Noto Sans Tamil', 'Noto Sans Telugu',
+    'Noto Sans Gujarati', 'Noto Sans Kannada', 'Noto Sans Malayalam',
+    'Noto Sans Gurmukhi', 'Noto Sans Oriya', sans-serif;
+  font-style: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {

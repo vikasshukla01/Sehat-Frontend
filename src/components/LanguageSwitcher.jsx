@@ -4,6 +4,15 @@ import { Languages } from 'lucide-react'
 const LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'hi', label: 'हिन्दी' },
+  { code: 'bn', label: 'বাংলা' },
+  { code: 'mr', label: 'मराठी' },
+  { code: 'te', label: 'తెలుగు' },
+  { code: 'ta', label: 'தமிழ்' },
+  { code: 'gu', label: 'ગુજરાતી' },
+  { code: 'kn', label: 'ಕನ್ನಡ' },
+  { code: 'ml', label: 'മലയാളം' },
+  { code: 'pa', label: 'ਪੰਜਾਬੀ' },
+  { code: 'or', label: 'ଓଡ଼ିଆ' },
 ]
 
 export default function LanguageSwitcher() {
