@@ -46,8 +46,33 @@ export async function findNearbyCare(lat, lng) {
     if (!res.ok) throw new Error('Nearby care request failed')
     return res.json()
   }
+  // Mock coordinates sit near the patient's mock location below so the map
+  // has something sensible to show even without a live backend.
   return mockDelay([
-    { name: 'Primary Health Centre', distanceKm: 3.2, type: 'PHC' },
-    { name: 'District Hospital', distanceKm: 11.5, type: 'Hospital' },
+    { name: 'Primary Health Centre', distanceKm: 3.2, type: 'PHC', lat: lat + 0.03, lng: lng + 0.01 },
+    { name: 'District Hospital', distanceKm: 11.5, type: 'Hospital', lat: lat - 0.05, lng: lng + 0.08 },
   ])
+}
+
+/**
+ * Resolves the patient's current position using the browser's Geolocation
+ * API. Falls back to a fixed demo coordinate (matching the backend's demo
+ * facilities, near Lucknow) if the user denies permission, the browser
+ * doesn't support it, or it times out — so the map still has something
+ * useful to show instead of failing silently.
+ */
+const FALLBACK_LOCATION = { lat: 26.8467, lng: 80.9462 }
+
+export function getCurrentLocation() {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve({ ...FALLBACK_LOCATION, isFallback: true })
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, isFallback: false }),
+      () => resolve({ ...FALLBACK_LOCATION, isFallback: true }),
+      { timeout: 6000, maximumAge: 60000 }
+    )
+  })
 }

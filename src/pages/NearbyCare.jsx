@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { MapPin, Zap, Armchair, Building2 } from 'lucide-react'
-import { findNearbyCare } from '../api/client.js'
+import { MapPin, Zap, Armchair, Building2, LocateFixed } from 'lucide-react'
+import { findNearbyCare, getCurrentLocation } from '../api/client.js'
+import CareMap from '../components/CareMap.jsx'
 
 const list = {
   hidden: {},
@@ -16,14 +17,27 @@ const row = {
 
 export default function NearbyCare() {
   const { t } = useTranslation()
+  const [patient, setPatient] = useState(null)
   const [facilities, setFacilities] = useState([])
   const [mode, setMode] = useState('fastest')
   const [loading, setLoading] = useState(true)
+  const [activeIndex, setActiveIndex] = useState(null)
 
   useEffect(() => {
-    findNearbyCare(0, 0)
-      .then(setFacilities)
-      .finally(() => setLoading(false))
+    let cancelled = false
+    async function load() {
+      const loc = await getCurrentLocation()
+      if (cancelled) return
+      setPatient(loc)
+      const results = await findNearbyCare(loc.lat, loc.lng)
+      if (cancelled) return
+      setFacilities(results)
+      setLoading(false)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (
@@ -36,6 +50,17 @@ export default function NearbyCare() {
       >
         {t('careTitle')}
       </motion.h1>
+
+      {patient?.isFallback && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-1 flex items-center gap-1.5 text-xs text-ink-500"
+        >
+          <LocateFixed size={13} strokeWidth={2} aria-hidden="true" />
+          Showing a demo location — allow location access for your actual position.
+        </motion.p>
+      )}
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -69,7 +94,27 @@ export default function NearbyCare() {
         </button>
       </motion.div>
 
-      <motion.div variants={list} initial="hidden" animate="show" className="mt-6 space-y-3">
+      {!loading && patient && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.35 }}
+          className="mt-4"
+        >
+          <CareMap
+            patient={patient}
+            facilities={facilities}
+            activeIndex={activeIndex}
+            onSelect={setActiveIndex}
+          />
+        </motion.div>
+      )}
+
+      {loading && (
+        <div className="mt-4 h-64 w-full animate-pulse rounded-2xl bg-forest-50" />
+      )}
+
+      <motion.div variants={list} initial="hidden" animate="show" className="mt-4 space-y-3">
         {loading &&
           [0, 1].map((i) => (
             <motion.div
@@ -82,11 +127,14 @@ export default function NearbyCare() {
 
         {!loading &&
           facilities.map((f, i) => (
-            <motion.div
+            <motion.button
               key={i}
               variants={row}
               whileHover={{ x: 2 }}
-              className="flex items-center gap-3 rounded-2xl border border-forest-100 bg-white px-4 py-3"
+              onClick={() => setActiveIndex(i)}
+              className={`flex w-full items-center gap-3 rounded-2xl border bg-white px-4 py-3 text-left transition-colors ${
+                activeIndex === i ? 'border-forest-400' : 'border-forest-100'
+              }`}
             >
               <motion.span
                 whileHover={{ scale: 1.1 }}
@@ -102,7 +150,7 @@ export default function NearbyCare() {
                 <MapPin size={12} strokeWidth={2} aria-hidden="true" />
                 {f.distanceKm} km
               </span>
-            </motion.div>
+            </motion.button>
           ))}
       </motion.div>
     </div>
